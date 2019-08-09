@@ -1,0 +1,157 @@
+Router(config)#hostname R1
+Router(config)#enable password cisco - Password for access
+Router(config)#enable secret cisco  - Password for privileged mode
+Router(config)#service password encryption
+
+Set clock
+Router#clock set 16:10:0 2 jan 2019
+
+Ping
+Router#ping 192.168.0.1
+
+Tracert
+Router#traceroute 192.168.0.1
+
+CDP
+Router#sh cdp neighbors
+
+
+Password for console line
+Router(config)#line con 0
+Router(config-line)#password cisco
+Router(config-line)#login
+
+Password for aux line
+Router(config)#line aux 0
+Router(config-line)#password cisco
+Router(config-line)#login
+
+configure ip addresses on router and establish connectivity
+Router>
+Router>enable
+Router#configure terminal
+Router(config)#interface fastEthernet 0/0
+Router(config-if)#ip address 192.168.1.1 255.255.255.0
+Router(config-if)#no shutdown
+Router(config-if)#description LAN network
+
+
+Set interface fast ethernet describtion to BRANCH OFFICE INTERFACE
+Router(config)#interface fastEthernet 0/0
+Router(config-if)#description BRANCH OFFICE INTERFACE
+
+Set MOTD as ---- UNAUTHORIZED ACCESS IS NOT ALLOWED ----
+Router(config)#banner motd / ---- UNAUTHORIZED ACCESS IS NOT ALLOWED ---- /
+
+Set telnet password to cisco 
+Router(config)#line vty 0 15
+Router(config-line)#password cisco
+Router(config-line)#login
+
+Static route
+Router(config)#ip route 10.10.10.0 255.255.255.0 192.168.0.1 (192.168.0.1 is nexthop)
+or
+Router(config)#ip route 10.10.10.0 255.255.255.0 FastEthernet0/1 (FastEthernet0/1 is nexthop)
+
+Routing table
+Router#sh ip route
+
+Configuration default route with static route
+Router(config)#ip route 0.0.0.0 0.0.0.0 192.168.0.1
+or
+Router(config)#ip route 0.0.0.0 0.0.0.0 FastEthernet0/1
+
+Default route
+Router(config)#ip default-network 192.168.0.0
+
+Nat Configuration
+Label the interfaces
+Router(config)#interface fastethernet 0/0
+Router(config)#ip nat inside
+Router(config)#interface fastethernet 0/1
+Router(config)#ip nat outside
+
+Create a access list to allow network 192.168.1.0/24 to be translated
+Router(config)#access-list 1 permit 192.168.1.0 0.0.0.255
+
+
+DHCP Server
+Router(config)#ip dhcp pool LAN
+Router(dhcp-config)#default-router 192.168.0.1
+Router(dhcp-config)#dns-server 192.168.0.1
+Router(dhcp-config)#network 192.168.0.0 255.255.255.0
+
+DHCP Client
+Router(config)#interface FastEthernet0/0
+Router(config-if)#ip address dhcp
+Router(config-if)#no shutdown
+
+CISCO RIP
+Router(config)#router rip
+Router(config-router)#network 192.168.0.0 (network conected to router)
+
+CISCO RIPv2
+Router(config)#router rip
+Router(config-router)#version 2
+Router(config-router)#network 192.168.0.0 (network conected to router)
+
+CISCO OSPF
+Router(config)#router ospf 1
+Router(config-router)#network 192.168.0.0 0.0.0.0 area 1
+Router(config-router)#network 192.168.10.0 0.0.0.0 area 1
+
+Router#sh ip ospf neigbor
+Router#show ip ospf database
+Router#show ip route
+
+Save configuration
+Router#copy running-config startup-config
+or 
+Router#write
+
+Show runing configuration (From RAM)
+Router#show running-config
+
+Show startup configuration (From NVRAM)
+Router#show startup-config
+
+Erase startup configuration
+Router#erase startup-config
+
+Logout from router
+Router#exit
+or
+Router#logout
+
+Switch Configuration
+Assign IP address of the switch - 192.168.4.2/24
+Switch(config)#interface vlan 1
+Switch(config-if)#ip address 192.168.4.2 255.255.255.0
+	
+Set default gateway of the switch to 192.168.4.1
+Switch(config)#ip default-gateway 192.168.4.1
+
+Save configuration
+Switch#write
+
+Disable domain lookup
+Router(config)#no ip domain lookup
+
+Synchronize switch's status messages
+Switch(config)#line con 0
+Switch(config-line)#logging synchronous
+
+Hardcode interface fastethernet 0/1 to both swithces to full duplex.
+Switch(config)#interface fastethernet 0/1
+Switch(config)#duplex full
+
+Hardcode Speed to 100 mbps.
+Switch(config)#interface fastethernet 0/1
+Switch(config)#speed 100
+
+Set maximum number of allowed mac address to port fastethernet 0/2 to 1
+Switch(config)#interface fastethernet 0/1
+Switch(config)#switchport port-security maximum 1
+
+Port 0/2 should go to shutdown state if other mac address device try to connect 
+Switch(config)#switchport port-security voilation shutdown
